@@ -1,3 +1,34 @@
+% Record your voice using MATLAB
+clear; clc;
+
+% Recording parameters
+Fs = 16000;        % Sampling frequency (Hz)
+nBits = 16;        % Bits per sample
+nChannels = 1;     % Mono
+duration = 5;      % Duration in seconds
+
+% Create audiorecorder object
+recObj = audiorecorder(Fs, nBits, nChannels);
+
+% Start recording
+disp('Recording... Speak now!');
+recordblocking(recObj, duration);
+disp('Recording finished.');
+
+% Retrieve audio data
+audioData = getaudiodata(recObj);
+
+% Play back the recording
+disp('Playing back...');
+soundsc(audioData, Fs);
+
+% Save to file
+filename = 'speech_sample.wav';
+audiowrite(filename, audioData, Fs);
+disp(['Saved to ', filename]);
+
+%%
+
 % Noise-Vocoding Simulation in MATLAB
 % Load speech and vocode using N channels
 
@@ -9,7 +40,7 @@ clear; close all; clc;
 signal = signal(:,1); % mono
 
 % Parameters
-N = 6;                    % Number of channels
+N = 3;                    % Number of channels
 low_freq = 300;           % Lower frequency bound (Hz)
 high_freq = 8000;         % Upper frequency bound (Hz)
 order = 4;                % Filter order
@@ -22,7 +53,7 @@ edges = logspace(log10(low_freq), log10(high_freq), N+1);
 vocoded = zeros(size(signal));
 
 % Loop over bands
-for n = 1:N
+for n = 1:N-1
     % Define band edges
     f1 = edges(n);
     f2 = edges(n+1);
